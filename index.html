@@ -1,210 +1,272 @@
-// === Quotex OTC Signal Generator - Full Production Code ===
-const otcPairs = [
-    "EUR/USD-OTC", "GBP/USD-OTC", "USD/JPY-OTC", "AUD/USD-OTC", "USD/CAD-OTC",
-    "EUR/GBP-OTC", "EUR/JPY-OTC", "GBP/JPY-OTC", "USD/INR-OTC", "USD/BRL-OTC",
-    "AUD/CAD-OTC", "EUR/CHF-OTC", "NZD/USD-OTC", "BTC/USD-OTC", "ETH/USD-OTC"
-];
-
-let priceHistories = {};
-let currentAsset = otcPairs[0];
-let currentTimeframe = 60;
-let currentPrice = 1.2345;
-let candles = [];
-let chartCtx;
-let timerInterval;
-
-function calculateRSI(prices, period = 14) {
-    if (prices.length < period + 1) return 50;
-    let gains = 0, losses = 0;
-    for (let i = 1; i <= period; i++) {
-        const change = prices[prices.length - period + i] - prices[prices.length - period + i - 1];
-        if (change > 0) gains += change; else losses -= change;
-    }
-    const avgGain = gains / period;
-    const avgLoss = losses / period || 0.001;
-    const rs = avgGain / avgLoss;
-    return 100 - (100 / (1 + rs));
-}
-
-function calculateMACD(prices) {
-    if (prices.length < 40) return {histogram: 0};
-    const ema12 = calculateEMA(prices, 12);
-    const ema26 = calculateEMA(prices, 26);
-    return {histogram: (ema12 - ema26) * 0.8};
-}
-
-function calculateEMA(data, period) {
-    if (data.length < period) return data[data.length-1];
-    let multiplier = 2 / (period + 1);
-    let ema = data[data.length - period];
-    for (let i = data.length - period + 1; i < data.length; i++) {
-        ema = (data[i] * multiplier) + (ema * (1 - multiplier));
-    }
-    return ema;
-}
-
-function calculateBollingerBands(prices, period=20, stdDev=2) {
-    if (prices.length < period) return {upper: 0, lower: 0};
-    const middle = prices.slice(-period).reduce((a,b)=>a+b,0)/period;
-    let sqDiff = 0;
-    for (let p of prices.slice(-period)) sqDiff += Math.pow(p - middle, 2);
-    const std = Math.sqrt(sqDiff / period);
-    return {upper: middle + stdDev*std, lower: middle - stdDev*std};
-}
-
-function calculateStochastic(prices, period=14) {
-    if (prices.length < period) return 50;
-    const slice = prices.slice(-period);
-    const high = Math.max(...slice);
-    const low = Math.min(...slice);
-    return ((prices[prices.length-1] - low) / (high - low || 1)) * 100;
-}
-
-function simulatePriceMovement() {
-    currentPrice += (Math.random() - 0.48) * 0.0012;
-    return parseFloat(currentPrice.toFixed(4));
-}
-
-function initPriceHistory(pair) {
-    if (!priceHistories[pair]) {
-        priceHistories[pair] = [];
-        let p = 1.08 + Math.random() * 80;
-        for (let i = 0; i < 250; i++) {
-            priceHistories[pair].push(p);
-            p = simulatePriceMovement() * (p / currentPrice || 1) * 0.999;
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quotex OTC Signal Generator</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+            color: #fff;
+            min-height: 100vh;
         }
-    }
-    candles = [];
-    const hist = priceHistories[pair];
-    for (let i = hist.length - 60; i < hist.length; i++) {
-        candles.push({close: hist[i]});
-    }
-    currentPrice = candles[candles.length-1].close;
-}
-
-function updateLivePrice() {
-    currentPrice = simulatePriceMovement();
-    document.getElementById('current-price').textContent = currentPrice.toFixed(4);
-    if (candles.length) candles[candles.length-1].close = currentPrice;
-    drawChart();
-}
-
-function startTimer() {
-    if (timerInterval) clearInterval(timerInterval);
-    let timeLeft = currentTimeframe;
-    const timerEl = document.getElementById('timer');
-    
-    timerInterval = setInterval(() => {
-        timeLeft--;
-        const m = Math.floor(timeLeft / 60);
-        const s = timeLeft % 60;
-        timerEl.textContent = `${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`;
+        .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
+        header { text-align: center; margin-bottom: 30px; }
+        header h1 {
+            font-size: 2.8em;
+            background: linear-gradient(to right, #00ff88, #00ccff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .controls {
+            display: flex; justify-content: space-between; flex-wrap: wrap; gap: 20px; margin-bottom: 30px;
+        }
+        .asset-selector, .timeframe-selector {
+            background: rgba(255,255,255,0.1); padding: 15px; border-radius: 12px; backdrop-filter: blur(10px);
+        }
+        #asset { padding: 12px; border-radius: 8px; background: #1e1e2e; color: #fff; border: none; min-width: 280px; }
+        .tf-buttons { display: flex; gap: 8px; flex-wrap: wrap; }
+        .tf-btn {
+            padding: 10px 20px; background: #1e1e2e; border: none; border-radius: 8px; color: #fff; cursor: pointer;
+        }
+        .tf-btn.active { background: #00ff88; color: #000; font-weight: bold; }
+        .main-display {
+            background: rgba(255,255,255,0.05); border-radius: 16px; padding: 30px; text-align: center; margin-bottom: 30px;
+        }
+        .live-price { display: flex; justify-content: center; gap: 50px; font-size: 1.5em; margin-bottom: 20px; flex-wrap: wrap; }
+        #current-price { color: #00ffcc; font-weight: bold; }
+        .timer { font-size: 2em; font-weight: bold; }
+        #generate-btn {
+            background: linear-gradient(45deg, #00ff88, #00ccff); color: #000; border: none;
+            padding: 18px 70px; font-size: 1.5em; font-weight: bold; border-radius: 50px;
+            cursor: pointer; box-shadow: 0 10px 30px rgba(0,255,136,0.4);
+        }
+        #generate-btn:hover { transform: scale(1.05); }
+        .signal-display {
+            min-height: 140px; font-size: 4em; font-weight: bold; border-radius: 16px; margin: 25px 0;
+            display: flex; align-items: center; justify-content: center;
+        }
+        .call { color: #00ff88; background: rgba(0,255,136,0.15); }
+        .put { color: #ff3366; background: rgba(255,51,102,0.15); }
+        .analysis-dashboard {
+            background: rgba(255,255,255,0.05); border-radius: 16px; padding: 25px; margin-bottom: 30px;
+        }
+        .indicators-grid {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 15px; margin-bottom: 25px;
+        }
+        .indicator { background: rgba(255,255,255,0.1); padding: 15px; border-radius: 10px; }
+        .confidence { font-size: 2.2em; text-align: center; margin: 20px 0; padding: 20px; border-radius: 12px; }
+        .explanation { background: #1e1e2e; padding: 20px; border-radius: 12px; line-height: 1.5; }
+        .chart-container { background: rgba(0,0,0,0.3); border-radius: 16px; padding: 20px; }
+        canvas { max-width: 100%; height: auto !important; }
+        footer { text-align: center; opacity: 0.7; margin-top: 50px; font-size: 0.9em; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Quotex OTC Signal Generator</h1>
+            <p>Real-time Binary Options Signals</p>
+        </header>
         
-        if (timeLeft <= 0) {
-            candles.push({close: currentPrice});
-            if (candles.length > 120) candles.shift();
-            timeLeft = currentTimeframe;
-            if (Math.random() > 0.5) generateSignal();
+        <div class="controls">
+            <div class="asset-selector">
+                <label for="asset">Asset Pair:</label>
+                <select id="asset" onchange="changeAsset()"></select>
+            </div>
+            
+            <div class="timeframe-selector">
+                <label>Timeframe:</label>
+                <div class="tf-buttons">
+                    <button onclick="setTimeframe(5)" class="tf-btn" data-tf="5">5s</button>
+                    <button onclick="setTimeframe(10)" class="tf-btn" data-tf="10">10s</button>
+                    <button onclick="setTimeframe(15)" class="tf-btn" data-tf="15">15s</button>
+                    <button onclick="setTimeframe(30)" class="tf-btn" data-tf="30">30s</button>
+                    <button onclick="setTimeframe(60)" class="tf-btn active" data-tf="60">1m</button>
+                    <button onclick="setTimeframe(120)" class="tf-btn" data-tf="120">2m</button>
+                    <button onclick="setTimeframe(300)" class="tf-btn" data-tf="300">5m</button>
+                </div>
+            </div>
+        </div>
+        
+        <div class="main-display">
+            <div class="live-price">
+                <div>Current Price: <span id="current-price">1.2345</span></div>
+                <div class="timer">Next Candle: <span id="timer">00:00</span></div>
+            </div>
+            <button id="generate-btn" onclick="generateSignal()">GENERATE SIGNAL</button>
+            <div id="signal-display" class="signal-display"></div>
+        </div>
+        
+        <div class="analysis-dashboard">
+            <h2>Analysis Dashboard</h2>
+            <div id="indicators" class="indicators-grid"></div>
+            <div id="confidence" class="confidence"></div>
+            <div id="explanation" class="explanation"></div>
+        </div>
+        
+        <div class="chart-container">
+            <canvas id="price-chart" width="900" height="380"></canvas>
+        </div>
+        
+        <footer>
+            <p>Simulated data for educational purposes only • Not financial advice</p>
+        </footer>
+    </div>
+
+    <script>
+        const otcPairs = ["EUR/USD-OTC","GBP/USD-OTC","USD/JPY-OTC","AUD/USD-OTC","USD/CAD-OTC","EUR/GBP-OTC","EUR/JPY-OTC","GBP/JPY-OTC","USD/INR-OTC","USD/BRL-OTC","AUD/CAD-OTC","EUR/CHF-OTC","NZD/USD-OTC","BTC/USD-OTC","ETH/USD-OTC"];
+        let priceHistories = {}, currentAsset = otcPairs[0], currentTimeframe = 60, currentPrice = 1.2345, candles = [], chartCtx, timerInterval;
+
+        function calculateRSI(prices, period = 14) {
+            if (prices.length < period + 1) return 50;
+            let gains = 0, losses = 0;
+            for (let i = 1; i <= period; i++) {
+                const change = prices[prices.length - period + i] - prices[prices.length - period + i - 1];
+                if (change > 0) gains += change; else losses -= change;
+            }
+            const avgGain = gains / period, avgLoss = losses / period || 0.001;
+            return 100 - (100 / (1 + avgGain / avgLoss));
         }
-    }, 1000);
-}
 
-function drawChart() {
-    if (!chartCtx || candles.length < 5) return;
-    const w = chartCtx.canvas.width;
-    const h = chartCtx.canvas.height;
-    chartCtx.clearRect(0, 0, w, h);
-    
-    const prices = candles.map(c => c.close);
-    const minP = Math.min(...prices);
-    const maxP = Math.max(...prices);
-    const range = maxP - minP || 0.01;
-    
-    chartCtx.strokeStyle = '#00ffcc';
-    chartCtx.lineWidth = 3;
-    chartCtx.beginPath();
-    
-    for (let i = 0; i < prices.length; i++) {
-        const x = (i / (prices.length - 1)) * w;
-        const y = h * (1 - (prices[i] - minP) / range) * 0.9 + h * 0.05;
-        i === 0 ? chartCtx.moveTo(x, y) : chartCtx.lineTo(x, y);
-    }
-    chartCtx.stroke();
-}
+        function calculateMACD(prices) {
+            if (prices.length < 40) return {histogram: 0};
+            return {histogram: (calculateEMA(prices,12) - calculateEMA(prices,26)) * 0.8};
+        }
 
-function generateSignal() {
-    const prices = priceHistories[currentAsset].slice(-120);
-    if (prices.length < 50) return;
-    
-    const rsi = calculateRSI(prices);
-    const macd = calculateMACD(prices);
-    const bb = calculateBollingerBands(prices);
-    const stoch = calculateStochastic(prices);
-    const lastPrice = prices[prices.length - 1];
-    
-    let bull = 0;
-    let reasons = [];
-    
-    if (rsi < 32) { bull++; reasons.push("RSI Oversold"); }
-    else if (rsi > 68) reasons.push("RSI Overbought");
-    
-    if (macd.histogram > 0) { bull++; reasons.push("MACD Bullish"); }
-    if (lastPrice <= bb.lower * 1.002) { bull++; reasons.push("Bollinger Support"); }
-    if (stoch < 25) { bull++; reasons.push("Stochastic Oversold"); }
-    
-    const signalType = bull >= 3 ? "CALL" : "PUT";
-    const confidence = Math.min(97, 68 + bull * 9);
-    
-    // Display
-    const sigDiv = document.getElementById('signal-display');
-    sigDiv.innerHTML = `<span class="${signalType.toLowerCase()}">${signalType} ▲</span>`;
-    
-    let indHTML = `
-        <div class="indicator">RSI: ${rsi.toFixed(1)}</div>
-        <div class="indicator">MACD Hist: ${macd.histogram.toFixed(4)}</div>
-        <div class="indicator">Stoch: ${stoch.toFixed(1)}</div>
-        <div class="indicator">BB %: ${((lastPrice - bb.lower)/(bb.upper - bb.lower) * 100).toFixed(0)}%</div>
-    `;
-    document.getElementById('indicators').innerHTML = indHTML;
-    
-    document.getElementById('confidence').innerHTML = `
-        <div style="background:linear-gradient(90deg,#00ff88,#00ccff);color:#000;padding:20px;border-radius:12px;">
-            Confidence: <strong>${confidence}%</strong>
-        </div>`;
-    
-    document.getElementById('explanation').innerHTML = `<strong>Reason:</strong> ${reasons.join(" + ")} confluence → Strong ${signalType} setup.`;
-    
-    drawChart();
-}
+        function calculateEMA(data, period) {
+            if (data.length < period) return data[data.length-1];
+            let multiplier = 2 / (period + 1), ema = data[data.length - period];
+            for (let i = data.length - period + 1; i < data.length; i++) {
+                ema = (data[i] * multiplier) + (ema * (1 - multiplier));
+            }
+            return ema;
+        }
 
-function changeAsset() {
-    currentAsset = document.getElementById('asset').value;
-    initPriceHistory(currentAsset);
-    generateSignal();
-}
+        function calculateBollingerBands(prices, period=20) {
+            if (prices.length < period) return {upper:0, lower:0};
+            const middle = prices.slice(-period).reduce((a,b)=>a+b,0)/period;
+            let sq = 0;
+            for (let p of prices.slice(-period)) sq += Math.pow(p - middle, 2);
+            const std = Math.sqrt(sq / period);
+            return {upper: middle + 2*std, lower: middle - 2*std};
+        }
 
-function setTimeframe(tf) {
-    currentTimeframe = tf;
-    document.querySelectorAll('.tf-btn').forEach(b => b.classList.toggle('active', parseInt(b.dataset.tf) === tf));
-    startTimer();
-}
+        function calculateStochastic(prices, period=14) {
+            if (prices.length < period) return 50;
+            const slice = prices.slice(-period);
+            const high = Math.max(...slice), low = Math.min(...slice);
+            return ((prices[prices.length-1] - low) / (high - low || 1)) * 100;
+        }
 
-function initializeApp() {
-    const select = document.getElementById('asset');
-    otcPairs.forEach(p => {
-        const opt = document.createElement('option');
-        opt.value = p; opt.textContent = p;
-        select.appendChild(opt);
-    });
-    
-    chartCtx = document.getElementById('price-chart').getContext('2d');
-    initPriceHistory(currentAsset);
-    
-    setInterval(updateLivePrice, 700);
-    startTimer();
-    setTimeout(generateSignal, 800);
-    
-    document.addEventListener('keydown', e => { if (e.key.toLowerCase() === 'g') generateSignal(); });
-}
+        function simulatePriceMovement() {
+            currentPrice += (Math.random() - 0.48) * 0.0012;
+            return parseFloat(currentPrice.toFixed(4));
+        }
 
-window.onload = initializeApp;
+        function initPriceHistory(pair) {
+            if (!priceHistories[pair]) {
+                priceHistories[pair] = [];
+                let p = 1.08 + Math.random() * 80;
+                for (let i = 0; i < 250; i++) {
+                    priceHistories[pair].push(p);
+                    p = simulatePriceMovement() * (p / currentPrice || 1) * 0.999;
+                }
+            }
+            candles = [];
+            const hist = priceHistories[pair];
+            for (let i = hist.length - 60; i < hist.length; i++) candles.push({close: hist[i]});
+            currentPrice = candles[candles.length-1].close;
+        }
+
+        function updateLivePrice() {
+            currentPrice = simulatePriceMovement();
+            document.getElementById('current-price').textContent = currentPrice.toFixed(4);
+            if (candles.length) candles[candles.length-1].close = currentPrice;
+            drawChart();
+        }
+
+        function startTimer() {
+            if (timerInterval) clearInterval(timerInterval);
+            let timeLeft = currentTimeframe;
+            const timerEl = document.getElementById('timer');
+            timerInterval = setInterval(() => {
+                timeLeft--;
+                const m = Math.floor(timeLeft / 60), s = timeLeft % 60;
+                timerEl.textContent = `${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`;
+                if (timeLeft <= 0) {
+                    candles.push({close: currentPrice});
+                    if (candles.length > 120) candles.shift();
+                    timeLeft = currentTimeframe;
+                    if (Math.random() > 0.5) generateSignal();
+                }
+            }, 1000);
+        }
+
+        function drawChart() {
+            if (!chartCtx || candles.length < 5) return;
+            const w = chartCtx.canvas.width, h = chartCtx.canvas.height;
+            chartCtx.clearRect(0, 0, w, h);
+            const prices = candles.map(c => c.close);
+            const minP = Math.min(...prices), maxP = Math.max(...prices), range = maxP - minP || 0.01;
+            chartCtx.strokeStyle = '#00ffcc'; chartCtx.lineWidth = 3; chartCtx.beginPath();
+            for (let i = 0; i < prices.length; i++) {
+                const x = (i / (prices.length - 1)) * w;
+                const y = h * (1 - (prices[i] - minP) / range) * 0.9 + h * 0.05;
+                i === 0 ? chartCtx.moveTo(x, y) : chartCtx.lineTo(x, y);
+            }
+            chartCtx.stroke();
+        }
+
+        function generateSignal() {
+            const prices = priceHistories[currentAsset].slice(-120);
+            if (prices.length < 50) return;
+            const rsi = calculateRSI(prices), macd = calculateMACD(prices), bb = calculateBollingerBands(prices), stoch = calculateStochastic(prices), lastPrice = prices[prices.length-1];
+            let bull = 0, reasons = [];
+            if (rsi < 32) { bull++; reasons.push("RSI Oversold"); }
+            if (macd.histogram > 0) { bull++; reasons.push("MACD Bullish"); }
+            if (lastPrice <= bb.lower * 1.002) { bull++; reasons.push("Bollinger Support"); }
+            if (stoch < 25) { bull++; reasons.push("Stochastic Oversold"); }
+            const signalType = bull >= 3 ? "CALL" : "PUT";
+            const confidence = Math.min(97, 68 + bull * 9);
+            document.getElementById('signal-display').innerHTML = `<span class="${signalType.toLowerCase()}">${signalType} ▲</span>`;
+            document.getElementById('indicators').innerHTML = `
+                <div class="indicator">RSI: ${rsi.toFixed(1)}</div>
+                <div class="indicator">MACD: ${macd.histogram.toFixed(4)}</div>
+                <div class="indicator">Stoch: ${stoch.toFixed(1)}</div>`;
+            document.getElementById('confidence').innerHTML = `<div style="background:linear-gradient(90deg,#00ff88,#00ccff);color:#000;padding:20px;border-radius:12px;">Confidence: <strong>${confidence}%</strong></div>`;
+            document.getElementById('explanation').innerHTML = `<strong>Reason:</strong> ${reasons.join(" + ")} confluence`;
+            drawChart();
+        }
+
+        function changeAsset() {
+            currentAsset = document.getElementById('asset').value;
+            initPriceHistory(currentAsset);
+            generateSignal();
+        }
+
+        function setTimeframe(tf) {
+            currentTimeframe = tf;
+            document.querySelectorAll('.tf-btn').forEach(b => b.classList.toggle('active', parseInt(b.dataset.tf) === tf));
+            startTimer();
+        }
+
+        function initializeApp() {
+            const select = document.getElementById('asset');
+            otcPairs.forEach(p => {
+                const opt = document.createElement('option');
+                opt.value = p; opt.textContent = p; select.appendChild(opt);
+            });
+            chartCtx = document.getElementById('price-chart').getContext('2d');
+            initPriceHistory(currentAsset);
+            setInterval(updateLivePrice, 700);
+            startTimer();
+            setTimeout(generateSignal, 800);
+        }
+
+        window.onload = initializeApp;
+    </script>
+</body>
+</html>
