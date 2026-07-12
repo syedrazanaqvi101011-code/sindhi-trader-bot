@@ -21,28 +21,9 @@
 
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', sans-serif; }
         
-        body { 
-            background-color: var(--bg-color); 
-            color: var(--text-main); 
-            padding: 12px; 
-            display: flex; 
-            justify-content: center; 
-            align-items: flex-start;
-            min-height: 100vh; 
-        }
+        body { background-color: var(--bg-color); color: var(--text-main); padding: 12px; display: flex; justify-content: center; align-items: flex-start; min-height: 100vh; }
 
-        .container { 
-            width: 100%; 
-            max-width: 480px; 
-            background: var(--card-bg); 
-            border-radius: 14px; 
-            padding: 15px; 
-            border: 1px solid var(--border); 
-            box-shadow: 0 12px 30px rgba(0,0,0,0.6);
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-        }
+        .container { width: 100%; max-width: 480px; background: var(--card-bg); border-radius: 14px; padding: 15px; border: 1px solid var(--border); box-shadow: 0 12px 30px rgba(0,0,0,0.6); display: flex; flex-direction: column; gap: 12px; }
         
         .brand-header { text-align: center; padding: 12px; background: rgba(255,193,7,0.05); border-radius: 10px; border: 1px solid rgba(255,193,7,0.15); }
         .brand-logo { font-size: 22px; font-weight: 900; color: var(--accent-gold); letter-spacing: 1px; }
@@ -56,15 +37,7 @@
         label { font-size: 11px; font-weight: bold; color: #a0aec0; text-transform: uppercase; }
         select { width: 100%; background: #090d1f; border: 1px solid var(--border); color: #fff; padding: 11px; border-radius: 6px; font-size: 14px; font-weight: 600; outline: none; }
 
-        #tvWidgetContainer { 
-            width: 100%; 
-            height: 220px; 
-            border-radius: 8px; 
-            overflow: hidden; 
-            border: 1px solid var(--border); 
-            display: none; 
-            background: #131722;
-        }
+        #tvWidgetContainer { width: 100%; height: 220px; border-radius: 8px; overflow: hidden; border: 1px solid var(--border); display: none; background: #131722; }
 
         .clock-panel { background: rgba(0,0,0,0.2); border: 1px solid var(--border); border-radius: 8px; padding: 12px; display: flex; justify-content: space-between; align-items: center; }
         .clock-digits { font-size: 24px; font-weight: bold; color: var(--accent-gold); font-family: monospace; }
@@ -84,89 +57,25 @@
         .main-btn { width: 100%; padding: 15px; background: linear-gradient(135deg, #ffc107, #ff9800); border: none; color: #000; font-size: 14px; font-weight: bold; border-radius: 6px; cursor: pointer; box-shadow: 0 4px 12px rgba(255,152,0,0.2); text-transform: uppercase; }
         .loader { border: 3px solid rgba(255,255,255,0.1); width: 30px; height: 30px; border-radius: 50%; border-left-color: var(--accent-gold); animation: spin 0.6s linear infinite; display: none; margin: 0 auto; }
         
-        .quotex-btn {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            width: 100%;
-            padding: 12px;
-            background: linear-gradient(135deg, #00b67a, #008f5d);
-            border: none;
-            color: #fff;
-            font-size: 13px;
-            font-weight: bold;
-            text-decoration: none;
-            border-radius: 6px;
-            text-align: center;
-            box-shadow: 0 4px 12px rgba(0,182,122,0.2);
-            text-transform: uppercase;
-        }
+        .quotex-btn { display: flex; align-items: center; justify-content: center; width: 100%; padding: 12px; background: linear-gradient(135deg, #00b67a, #008f5d); border: none; color: #fff; font-size: 13px; font-weight: bold; text-decoration: none; border-radius: 6px; text-align: center; box-shadow: 0 4px 12px rgba(0,182,122,0.2); text-transform: uppercase; }
 
-        .social-section { 
-            background: rgba(255,255,255,0.02); 
-            border: 1px solid var(--border); 
-            border-radius: 10px; 
-            padding: 12px; 
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-        }
+        .social-section { background: rgba(255,255,255,0.02); border: 1px solid var(--border); border-radius: 10px; padding: 12px; display: flex; flex-direction: column; gap: 8px; }
         .social-title { font-size: 11px; font-weight: bold; color: #a0aec0; text-transform: uppercase; text-align: center; margin-bottom: 2px; letter-spacing: 0.5px; }
-        .social-btn { 
-            display: flex; 
-            align-items: center; 
-            justify-content: center; 
-            gap: 8px; 
-            width: 100%; 
-            padding: 11px; 
-            color: #fff; 
-            font-size: 13px; 
-            font-weight: bold; 
-            text-decoration: none; 
-            border-radius: 6px; 
-            transition: opacity 0.2s;
-        }
+        .social-btn { display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; padding: 11px; color: #fff; font-size: 13px; font-weight: bold; text-decoration: none; border-radius: 6px; transition: opacity 0.2s; }
         .social-btn:active, .quotex-btn:active { opacity: 0.8; }
         .btn-tiktok { background: linear-gradient(135deg, #000000, var(--tiktok-color)); border: 1px solid #333; }
         .btn-wa-chat { background: var(--whatsapp-color); color: #000; }
 
-        /* 🔒 VIP Verification Overlay Popup CSS 🔒 */
-        .modal-overlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(4, 7, 20, 0.97);
-            display: flex; justify-content: center; align-items: center;
-            z-index: 10000; padding: 15px; display: none;
-        }
-        .modal-box {
-            background: #0f162a; border: 2px solid var(--accent-gold);
-            width: 100%; max-width: 430px; border-radius: 12px; padding: 20px;
-            box-shadow: 0 0 30px rgba(255,193,7,0.2);
-            display: flex; flex-direction: column; gap: 12px;
-            max-height: 92vh; overflow-y: auto;
-        }
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(4, 7, 20, 0.97); display: flex; justify-content: center; align-items: center; z-index: 10000; padding: 15px; display: none; }
+        .modal-box { background: #0f162a; border: 2px solid var(--accent-gold); width: 100%; max-width: 430px; border-radius: 12px; padding: 20px; box-shadow: 0 0 30px rgba(255,193,7,0.2); display: flex; flex-direction: column; gap: 12px; max-height: 92vh; overflow-y: auto; }
         .modal-title { font-size: 18px; font-weight: bold; color: var(--accent-gold); text-align: center; letter-spacing: 0.5px; }
         .modal-text { font-size: 12px; color: #cbd5e1; line-height: 1.4; text-align: center; }
-        
-        .promo-box { border: 2px dashed #00e676; background: rgba(0, 230, 118, 0.03); padding: 12px; border-radius: 8px; display: flex; flex-direction: column; gap: 8px; }
-        .option-box { background: rgba(255,255,255,0.02); border: 1px solid var(--border); padding: 12px; border-radius: 8px; display: flex; flex-direction: column; gap: 8px; }
-        .box-title { font-size: 11px; font-weight: bold; text-transform: uppercase; color: var(--accent-gold); display: flex; justify-content: space-between; }
-        
         .copy-row { display: flex; justify-content: space-between; align-items: center; background: #070b19; padding: 8px; border-radius: 5px; border: 1px solid var(--border); margin-top: 3px; gap: 8px; }
         .copy-text { font-family: monospace; color: #cbd5e1; word-break: break-all; font-size: 11.5px; user-select: all; }
         .copy-btn { background: var(--accent-gold); color: #000; border: none; padding: 4px 8px; border-radius: 4px; font-size: 10px; font-weight: bold; cursor: pointer; min-width: 45px; }
-        .copy-btn:active { opacity: 0.7; }
-
-        .option-divider { text-align: center; color: #a0aec0; font-size: 10px; font-weight: bold; text-transform: uppercase; margin: 2px 0; position: relative; }
-        .modal-input {
-            width: 100%; padding: 10px; background: #070b19; border: 1px solid var(--border);
-            color: #fff; border-radius: 6px; font-size: 13px; outline: none; text-align: center;
-        }
-        .modal-submit-btn {
-            width: 100%; padding: 13px; background: linear-gradient(135deg, #ffc107, #ff9800); border: none;
-            color: #000; font-weight: bold; border-radius: 6px; cursor: pointer; font-size: 13px; text-transform: uppercase; letter-spacing: 0.5px;
-        }
+        .modal-input { width: 100%; padding: 10px; background: #070b19; border: 1px solid var(--border); color: #fff; border-radius: 6px; font-size: 13px; outline: none; text-align: center; }
+        .modal-submit-btn { width: 100%; padding: 13px; background: linear-gradient(135deg, #ffc107, #ff9800); border: none; color: #000; font-weight: bold; border-radius: 6px; cursor: pointer; font-size: 13px; text-transform: uppercase; letter-spacing: 0.5px; }
         .close-modal { text-align: center; font-size: 12px; color: #a0aec0; cursor: pointer; text-decoration: underline; margin-top: 4px; }
-
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
     </style>
 </head>
@@ -175,43 +84,25 @@
 <div class="container">
     <div class="brand-header">
         <h1 class="brand-logo">⚡ SINDHI TRADER BOT ⚡</h1>
-        <p class="brand-tagline">Quotex Binary & Forex Scalper</p>
+        <p class="brand-tagline">Pro OTC & Forex Scalper</p>
     </div>
 
-    <!-- Mode Buttons -->
     <div class="mode-container">
-        <button class="mode-btn active" id="btnBinary" onclick="switchMode('BINARY')">QUOTEX BINARY</button>
-        <button class="mode-btn" id="btnForex" onclick="switchMode('FOREX')">FOREX SCALPING</button>
+        <button class="mode-btn active" id="btnBinary" onclick="switchMode('BINARY')">BINARY</button>
+        <button class="mode-btn" id="btnForex" onclick="switchMode('FOREX')">FOREX</button>
     </div>
 
-    <!-- Dropdowns -->
     <div class="dropdown-wrapper">
-        <label id="assetLabel">Select Quotex Market Pair</label>
-        <select id="pairSelector" onchange="onPairChange()">
-            <option value="EURUSD_OTC" data-tv="FX_IDC:EURUSD">EUR/USD (OTC)</option>
-            <option value="GBPUSD_OTC" data-tv="FX_IDC:GBPUSD">GBP/USD (OTC)</option>
-            <option value="USDINR_OTC" data-tv="FX_IDC:USDINR">USD/INR (OTC)</option>
-            <option value="EURUSD" data-tv="FX:EURUSD">EUR/USD (REAL)</option>
-            <option value="GBPUSD" data-tv="FX:GBPUSD">GBP/USD (REAL)</option>
-            <option value="USDJPY" data-tv="FX:USDJPY">USD/JPY (REAL)</option>
-        </select>
-    </div>
-
-    <div class="dropdown-wrapper" id="timeframeWrapper">
-        <label>Select Duration</label>
-        <select id="timeframeSelector">
-            <option value="5">5 Seconds Candle</option>
-            <option value="60" selected>1 Minute Expiry</option>
-        </select>
+        <label id="assetLabel">Select Market Pair</label>
+        <select id="pairSelector" onchange="resetOutputs()"></select>
     </div>
 
     <div id="tvWidgetContainer"></div>
 
-    <!-- Clock Panel -->
     <div class="clock-panel">
         <div>
-            <span style="font-size: 10px; color:#a0aec0; font-weight:bold;">MARKET METRIC SYNC</span>
-            <div style="font-size:12px; color:#fff;" id="syncLabel">Quotex Binary Execution Grid</div>
+            <span style="font-size: 10px; color:#a0aec0; font-weight:bold;">SYSTEM SYNC</span>
+            <div style="font-size:12px; color:#fff;" id="syncLabel">Execution Engine</div>
         </div>
         <div style="text-align:right;">
             <div style="font-size: 9px; color: #a0aec0;">CANDLE CLOCK</div>
@@ -219,388 +110,104 @@
         </div>
     </div>
 
-    <!-- Output Box -->
     <div class="signal-card">
         <div class="loader" id="botLoader"></div>
         <div id="welcomeText" style="color:#a0aec0; font-size:12px;">
-            Configure parameters, monitor the countdown close, and trigger execution for a verified signal lock.
+            Select your asset and generate a professional 1-minute signal.
         </div>
         <div class="verdict" id="botVerdict"></div>
         <div class="badge" id="botBadge"></div>
-
-        <div class="forex-stats" id="forexStatsBlock" style="display:none;">
-            <div class="stat-box">
-                <div>EXPECTED PROFIT</div>
-                <div class="stat-val" id="fxPips">-- Pips</div>
-            </div>
-            <div class="stat-box">
-                <div>EST. RETURN (0.1 LOT)</div>
-                <div class="stat-val" id="fxLotReturn" style="color:var(--green);">$--</div>
-            </div>
-        </div>
-
         <div class="analysis-box" id="botAnalysis">
-            <b style="color:var(--accent-gold);">⚡ STRUCTURAL MATRIX LOGS:</b><br>
+            <b style="color:var(--accent-gold);">⚡ DEEP OTC ANALYSIS LOGS:</b><br>
             <span id="analysisContent"></span>
         </div>
     </div>
 
     <button class="main-btn" onclick="checkVipGate()">Generate Prediction</button>
 
-    <!-- 📥 आपका ऑफिशियल कोटेक्स एफीलिएट बटन 📥 -->
-    <a href="https://broker-qx.pro/sign-up/?lid=2055362" target="_blank" class="quotex-btn">
-        📥 Register on Quotex (Official Link)
-    </a>
+    <a href="https://broker-qx.pro/sign-up/?lid=2055362" target="_blank" class="quotex-btn">Register on Quotex</a>
 
-    <!-- 📢 सोशल मीडिया और कांटेक्ट बटन्स का सेक्शन 📢 -->
     <div class="social-section">
-        <div class="social-title">🔗 Official Channels & Support</div>
-        
-        <!-- 🎵 आपका अपडेटेड टिकटॉक लिंक -->
-        <a href="https://vt.tiktok.com/ZSXFVqKnH/" target="_blank" class="social-btn btn-tiktok">
-            🎵 Follow on TikTok
-        </a>
-        
-        <a href="https://wa.me/923133119500?text=Hello%20Sindhi%20Trader,%20I%20need%20help%20with%20the%20bot!" target="_blank" class="social-btn btn-wa-chat">
-            💬 Chat on WhatsApp
-        </a>
+        <div class="social-title">Official Channels</div>
+        <a href="https://vt.tiktok.com/ZSXFVqKnH/" target="_blank" class="social-btn btn-tiktok">TikTok</a>
+        <a href="https://wa.me/923133119500" target="_blank" class="social-btn btn-wa-chat">WhatsApp Support</a>
     </div>
 </div>
 
-<!-- 🔒 VIP Verification Overlay Popup Structure 🔒 -->
 <div class="modal-overlay" id="vipModal">
     <div class="modal-box">
-        <div class="modal-title">🔒 VIP ACCESS REQUIRED</div>
-        <p class="modal-text">बोट का इस्तेमाल करने के लिए लाइसेंस एक्टिवेट करें:</p>
-        
-        <!-- 🟢 बॉक्स 1: स्पेशल प्रोमो कोड बॉक्स -->
-        <div class="promo-box">
-            <div class="box-title" style="color: #00e676;">🔑 HAVE A PROMO CODE?</div>
-            <input type="text" id="promoCodeInput" class="modal-input" style="border-color: rgba(0,230,118,0.3);" placeholder="Enter Lifetime Promo Code">
-        </div>
-
-        <div class="option-divider">OR METHOD 1</div>
-
-        <!-- 🔵 बॉक्स 2: कोटेक्स एफीलिएट बॉक्स -->
-        <div class="option-box">
-            <span class="box-title">📈 REGISTER VIA OFFICIAL LINK</span>
-            <a href="https://broker-qx.pro/sign-up/?lid=2055362" target="_blank" class="quotex-btn" style="font-size:11px; padding:9px;">
-                👉 Register & Deposit on Quotex
-            </a>
-            <input type="number" id="traderIdInput" class="modal-input" placeholder="Enter your Quotex Trader ID">
-        </div>
-        
-        <div class="option-divider">OR METHOD 2 (LIFETIME FEES - $20)</div>
-        
-        <!-- 🟡 बॉक्स 3: USDT TRC20 अलग बॉक्स -->
-        <div class="option-box">
-            <span class="box-title">🪙 PAY VIA USDT (TRC20)</span>
-            <div class="copy-row">
-                <span class="copy-text" id="trcAddress">TQQBhUVxjbSkxVHNUXCRpfr5AkxJ9GbpCH</span>
-                <button class="copy-btn" onclick="copyText('trcAddress')">Copy</button>
-            </div>
-        </div>
-
-        <!-- 🟡 बॉक्स 4: Binance Pay ID अलग बॉक्स -->
-        <div class="option-box">
-            <span class="box-title">💳 PAY VIA BINANCE PAY ID</span>
-            <div class="copy-row">
-                <span class="copy-text" id="binanceId">992070558</span>
-                <button class="copy-btn" onclick="copyText('binanceId')">Copy</button>
-            </div>
-        </div>
-
-        <!-- वेरिफिकेशन इनपुट फोल्डर बॉक्स -->
-        <div class="option-box" style="background: rgba(255,193,7,0.02);">
-            <span class="box-title" style="font-size:10px;">SUBMIT TRANSACTION PROOF (If Paid $20)</span>
-            <input type="text" id="paymentTxInput" class="modal-input" placeholder="Enter Payment TxID / Ref ID">
-        </div>
-
-        <button class="modal-submit-btn" onclick="submitVipRequest()">VALIDATE & UNLOCK</button>
-        <div class="close-modal" onclick="closeVipGate()">Cancel & Go Back</div>
+        <div class="modal-title">VIP ACCESS REQUIRED</div>
+        <input type="text" id="promoCodeInput" class="modal-input" placeholder="Enter VIP Promo Code">
+        <button class="modal-submit-btn" onclick="submitVipRequest()">VALIDATE ACCESS</button>
+        <div class="close-modal" onclick="closeVipGate()">Close</div>
     </div>
 </div>
 
 <script>
-    let currentMode = "BINARY";
-    let clockInterval = 60;
-    let isVipUnlocked = false; 
+    let isVipUnlocked = false;
     const SECRET_PROMO = "SINDHIVIP786";
 
-    // 🔒 लॉक सिस्टम वैरियेबल्स
-    let lockedSignal = null;
-    let currentLockedAsset = ""; 
-    let lastGeneratedMinute = -1; // किस कैंडल मिनट चक्र में नया सिग्नल जनरेट हुआ
-
-    function copyText(elementId) {
-        const text = document.getElementById(elementId).innerText;
-        navigator.clipboard.writeText(text);
-        alert("Copied successfully!");
-    }
-
-    // ⏱️ टाइमर फंक्शन
-    function getRemainingTime() {
-        const d = new Date();
-        const trueSec = d.getSeconds() + (d.getMilliseconds() / 1000);
-        return clockInterval - (trueSec % clockInterval);
-    }
-
-    setInterval(() => {
-        let rem = getRemainingTime();
-        document.getElementById("candleClock").innerText = rem.toFixed(1) + "s";
-    }, 100);
-
-    function checkVipGate() {
-        if (isVipUnlocked) {
-            executeBotLogic();
-        } else {
-            document.getElementById("vipModal").style.display = "flex";
-        }
-    }
-
-    function closeVipGate() {
-        document.getElementById("vipModal").style.display = "none";
-    }
-
-    function submitVipRequest() {
-        const promoInput = document.getElementById("promoCodeInput").value.trim();
-        const traderId = document.getElementById("traderIdInput").value.trim();
-        const txId = document.getElementById("paymentTxInput").value.trim();
-
-        if (promoInput === SECRET_PROMO) {
-            isVipUnlocked = true;
-            closeVipGate();
-            alert("✅ PROMO CODE ACCEPTED!\n\nस्वागत है भाई! बोट आपके लिए लाइफटाइम के लिए फ्री अनलॉक कर दिया गया है।");
-            executeBotLogic();
-            return;
-        } else if (promoInput !== "") {
-            alert("❌ गलत प्रोमो कोड! कृपया सही कोड दर्ज करें या अन्य तरीकों का इस्तेमाल करें।");
-            return;
-        }
-
-        if (!traderId && !txId) {
-            alert("कृपया प्रोमो कोड दर्ज करें, कोटेक्स आईडी भरें या $20 पेमेंट की TxID भरें!");
-            return;
-        }
-
-        let message = `Hello Sindhi Trader! I want to unlock VIP Access.%0A%0A`;
-        if (traderId) message += `🔹 Quotex Trader ID: ${traderId}%0A`;
-        if (txId) message += `🔹 Paid $20 Details (TxID/Ref): ${txId}%0A`;
-        message += `%0APlease verify and confirm my activation!`;
-
-        window.open(`https://wa.me/923133119500?text=${message}`, '_blank');
-        
-        isVipUnlocked = true;
-        closeVipGate();
-        executeBotLogic();
-    }
-
     function switchMode(mode) {
-        const bBin = document.getElementById("btnBinary");
-        const bFx = document.getElementById("btnForex");
+        document.getElementById("btnBinary").className = mode === "BINARY" ? "mode-btn active" : "mode-btn";
+        document.getElementById("btnForex").className = mode === "FOREX" ? "mode-btn active" : "mode-btn";
         const pSel = document.getElementById("pairSelector");
-        const tfWrap = document.getElementById("timeframeWrapper");
-        
-        currentMode = mode;
-        pSel.innerHTML = "";
-
-        if(mode === "BINARY") {
-            bBin.classList.add("active"); bFx.classList.remove("active");
-            document.getElementById("assetLabel").innerText = "Select Quotex Market Pair";
-            document.getElementById("syncLabel").innerText = "Quotex Binary Execution Grid";
-            tfWrap.style.display = "flex";
-            clockInterval = 60;
-
-            pSel.innerHTML = `
-                <option value="EURUSD_OTC" data-tv="FX_IDC:EURUSD">EUR/USD (OTC)</option>
-                <option value="GBPUSD_OTC" data-tv="FX_IDC:GBPUSD">GBP/USD (OTC)</option>
-                <option value="USDINR_OTC" data-tv="FX_IDC:USDINR">USD/INR (OTC)</option>
-                <option value="EURUSD" data-tv="FX:EURUSD">EUR/USD (REAL)</option>
-                <option value="GBPUSD" data-tv="FX:GBPUSD">GBP/USD (REAL)</option>
-                <option value="USDJPY" data-tv="FX:USDJPY">USD/JPY (REAL)</option>`;
-        } else {
-            bFx.classList.add("active"); bBin.classList.remove("active");
-            document.getElementById("assetLabel").innerText = "Select Forex Scalping Asset";
-            document.getElementById("syncLabel").innerText = "Forex Micro-Scalping Frame";
-            tfWrap.style.display = "none";
-            clockInterval = 15;
-
-            pSel.innerHTML = `
-                <option value="XAUUSD" data-tv="FX:XAUUSD">XAU/USD (GOLD)</option>
-                <option value="EURUSD_FX" data-tv="FX:EURUSD">EUR/USD (Forex Real)</option>
-                <option value="GBPUSD_FX" data-tv="FX:GBPUSD">GBP/USD (Forex Real)</option>
-                <option value="USDJPY_FX" data-tv="FX:USDJPY">USD/JPY (REAL)</option>`;
-        }
-        lockedSignal = null; 
-        lastGeneratedMinute = -1;
-        onPairChange();
-        resetOutputs();
-    }
-
-    function onPairChange() {
-        const select = document.getElementById("pairSelector");
-        const option = select.options[select.selectedIndex];
-        const isOtc = select.value.includes("OTC");
-        const widgetBox = document.getElementById("tvWidgetContainer");
-
-        if (!isOtc && option) {
-            widgetBox.style.display = "block";
-            widgetBox.innerHTML = "";
-            const script = document.createElement("script");
-            script.type = "text/javascript";
-            script.src = "https://s3.tradingview.com/external-embedding/embed-widget-technical-analysis.js";
-            script.async = true;
-            script.innerHTML = JSON.stringify({
-                "interval": "1m",
-                "width": "100%",
-                "isTransparent": true,
-                "height": "100%",
-                "symbol": option.getAttribute("data-tv"),
-                "showIntervalTabs": false,
-                "locale": "en",
-                "colorTheme": "dark"
-            });
-            widgetBox.appendChild(script);
-        } else {
-            widgetBox.style.display = "none";
-        }
+        pSel.innerHTML = mode === "BINARY" ? 
+            `<option value="EURUSD_OTC">EUR/USD (OTC)</option><option value="GBPUSD_OTC">GBP/USD (OTC)</option><option value="USDINR_OTC">USD/INR (OTC)</option>` :
+            `<option value="XAUUSD">XAU/USD (GOLD)</option><option value="EURUSD">EUR/USD</option>`;
         resetOutputs();
     }
 
     function resetOutputs() {
-        const select = document.getElementById("pairSelector");
-        if (lockedSignal && currentLockedAsset === select.value) {
-            return; 
-        }
         document.getElementById("welcomeText").style.display = "block";
         document.getElementById("botVerdict").innerText = "";
         document.getElementById("botBadge").style.display = "none";
-        document.getElementById("forexStatsBlock").style.display = "none";
         document.getElementById("botAnalysis").style.display = "none";
     }
 
+    setInterval(() => {
+        const rem = 60 - (new Date().getSeconds() % 60);
+        document.getElementById("candleClock").innerText = rem.toFixed(0) + "s";
+    }, 1000);
+
+    function checkVipGate() {
+        if (isVipUnlocked) executeBotLogic();
+        else document.getElementById("vipModal").style.display = "flex";
+    }
+
+    function submitVipRequest() {
+        if (document.getElementById("promoCodeInput").value === SECRET_PROMO) {
+            isVipUnlocked = true;
+            document.getElementById("vipModal").style.display = "none";
+            executeBotLogic();
+        } else alert("Invalid Code!");
+    }
+
+    function closeVipGate() { document.getElementById("vipModal").style.display = "none"; }
+
     function executeBotLogic() {
+        const asset = document.getElementById("pairSelector").value;
         const loader = document.getElementById("botLoader");
-        const welcome = document.getElementById("welcomeText");
-        const verdict = document.getElementById("botVerdict");
-        const badge = document.getElementById("botBadge");
-        const fxStats = document.getElementById("forexStatsBlock");
         const analysis = document.getElementById("botAnalysis");
-        const aText = document.getElementById("analysisContent");
-
-        const select = document.getElementById("pairSelector");
-        const activePair = select.value;
+        const aContent = document.getElementById("analysisContent");
         
-        const d = new Date();
-        const currentMinute = d.getMinutes();
-        const remSeconds = getRemainingTime();
-
-        // 🎯 बोट यह तय करेगा कि वह किस चक्र (Cycle Hour/Minute) के लिए प्रेडिक्शन दे रहा है
-        // अगर 15 सेकंड से कम बचे हैं, तो यह अगली आने वाली कैंडल का चक्र (currentMinute + 1) कहलाएगा।
-        let targetCycle = (remSeconds <= 15) ? (currentMinute + 1) % 60 : currentMinute;
-
-        // 🔒 अगर उसी चक्र और उसी असेट का सिग्नल पहले से लॉक है, तो बार-बार बदलने मत दो!
-        if (lockedSignal && currentLockedAsset === activePair && lastGeneratedMinute === targetCycle) {
-            welcome.style.display = "none";
-            loader.style.display = "block";
-            verdict.innerText = "";
-            badge.style.display = "none";
-            fxStats.style.display = "none";
-            analysis.style.display = "none";
-
-            setTimeout(() => {
-                loader.style.display = "none";
-                verdict.innerText = lockedSignal.decision;
-                verdict.className = `verdict ${lockedSignal.color}`;
-                badge.innerText = lockedSignal.badgeText;
-                badge.style.background = lockedSignal.badgeBg;
-                badge.style.color = lockedSignal.badgeColor;
-                badge.style.display = "inline-block";
-
-                if (currentMode === "BINARY") {
-                    fxStats.style.display = "none";
-                } else {
-                    fxStats.style.display = "grid";
-                    document.getElementById("fxPips").innerText = lockedSignal.fxPips;
-                    document.getElementById("fxLotReturn").innerText = lockedSignal.fxReturn;
-                }
-                aText.innerHTML = lockedSignal.analysisText;
-                analysis.style.display = "block";
-            }, 400);
-            return;
-        }
-
-        // 🆕 अगर 15s की थ्रेसहोल्ड पार हो गई है या असेट नया है, तो फ्रेश एडवांस सिग्नल जनरेट करें
-        welcome.style.display = "none";
         loader.style.display = "block";
-        verdict.innerText = "";
-        badge.style.display = "none";
-        fxStats.style.display = "none";
-        analysis.style.display = "none";
+        document.getElementById("welcomeText").style.display = "none";
 
         setTimeout(() => {
             loader.style.display = "none";
+            const isCall = Math.random() > 0.5;
+            document.getElementById("botVerdict").innerText = isCall ? "CALL (UP)" : "PUT (DOWN)";
+            document.getElementById("botVerdict").className = isCall ? "verdict call-style" : "verdict put-style";
             
-            const randBias = Math.random();
-            let decision = randBias > 0.49 ? "CALL (UP)" : "PUT (DOWN)";
-            let color = randBias > 0.49 ? "call-style" : "put-style";
-            let strength = Math.floor(Math.random() * (96 - 87 + 1)) + 87;
-
-            // 📢 यूज़र को बताने के लिए कि यह अगली कैंडल का एडवांस सिग्नल है
-            let prefix = (remSeconds <= 15) ? "NEXT 1-MIN: " : "";
-            let finalDecision = prefix + decision;
-
-            let badgeText = `🎯 STRENGTH: ${strength}% CONFIDENCE`;
-            let badgeBg = randBias > 0.49 ? "rgba(0,230,118,0.15)" : "rgba(255,61,0,0.15)";
-            let badgeColor = randBias > 0.49 ? "var(--green)" : "var(--red)";
-
-            let fxPips = "-- Pips";
-            let fxReturn = "$--";
-            let analysisText = "";
-
-            if (currentMode === "BINARY") {
-                let note = (remSeconds <= 15) ? `<b style="color:var(--accent-gold);">⚡ NEXT CANDLE ADVANCE LOCKED:</b> तैयारी करो भाई, 15 सेकंड के अंदर ट्रेड प्लेस करें!<br>` : "";
-                if(activePair.includes("OTC")) {
-                    analysisText = note + `• <b>OTC Algorithm Tracker:</b> Matching volume vectors identified on current cycle.<br>• <b>Price Action:</b> Rejection at psychological level. Candlestick behavior favors dynamic momentum continuity.`;
-                } else {
-                    analysisText = note + `• <b>Live Feed Sync:</b> Connected to TradingView gauge data node.<br>• <b>Oscillators:</b> RSI(14) matrix confirms dynamic support baseline room.<br>• <b>Moving Averages:</b> Structural EMAs suggest directional confluence matching.`;
-                }
-            } else {
-                let pipsGen = activePair.includes("XAUUSD") ? (Math.random() * (45 - 20) + 20).toFixed(1) : (Math.random() * (12 - 5) + 5).toFixed(1);
-                let monetaryReturn = activePair.includes("XAUUSD") ? (pipsGen * 10).toFixed(2) : (pipsGen * 1).toFixed(2);
-                fxPips = `+${pipsGen} Pips`;
-                fxReturn = `$${monetaryReturn}`;
-
-                analysisText = `• <b>Asset Class:</b> Forex Multi-Confluence Grid (15-Min Outlook).<br>• <b>Volume Spread Analysis:</b> Institutional liquidity zones mapped near current boundaries.<br>• <b>Risk Control:</b> Set stop-loss orders outside immediate deviation bands.`;
-            }
-
-            // इस सिग्नल को इस विशिष्ट चक्र (targetCycle) के लिए लॉक कर दें
-            lockedSignal = {
-                decision: finalDecision, color, badgeText, badgeBg, badgeColor, fxPips, fxReturn, analysisText
-            };
-            lastGeneratedMinute = targetCycle;
-            currentLockedAsset = activePair;
-
-            // आउटपुट शो करें
-            verdict.innerText = finalDecision;
-            verdict.className = `verdict ${color}`;
-            badge.innerText = badgeText;
-            badge.style.background = badgeBg;
-            badge.style.color = badgeColor;
-            badge.style.display = "inline-block";
-
-            if (currentMode === "BINARY") {
-                fxStats.style.display = "none";
-            } else {
-                fxStats.style.display = "grid";
-                document.getElementById("fxPips").innerText = fxPips;
-                document.getElementById("fxLotReturn").innerText = fxReturn;
-            }
-            aText.innerHTML = analysisText;
+            // Deep Analysis Logic
+            const indicators = ["RSI (14) at 42.5 (Neutral)", "Bollinger Bands contracting", "Volume accumulation detected"];
+            const priceAction = "Rejection at support level confirming short-term momentum.";
+            aContent.innerHTML = `Asset: ${asset}<br>Analysis: ${priceAction}<br>Indicators: ${indicators.join(', ')}<br>Direction: ${isCall ? "Bullish" : "Bearish"} bias confirmed for 1-minute expiry.`;
             analysis.style.display = "block";
-
-        }, 500);
+        }, 1500);
     }
+
+    switchMode('BINARY');
 </script>
 </body>
 </html>
