@@ -2,60 +2,39 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Quotex OTC Pro Signal  Agent v2</title>
+<title>Quotex OTC Pro Signal Agent v2</title>
 <style>
-  body { font-family: 'Segoe UI', sans-serif; background:#0a0a14; color:#0f0; padding:20px; text-align:center; }
-  .signal { font-size:1.8rem; padding:20px; margin:15px; border-radius:12px; font-weight:bold; }
+  body { font-family: 'Segoe UI', sans-serif; background:#0a0a14; color:#0f0; padding:20px; text-align:center; margin:0; }
+  h1 { color: #0f0; }
+  .signal { font-size:1.8rem; padding:25px; margin:20px auto; border-radius:12px; font-weight:bold; max-width:380px; }
   .call { background:rgba(0,255,100,0.25); border:2px solid #0f0; }
   .put  { background:rgba(255,50,50,0.25); border:2px solid #f33; }
   .neutral { background:#333; }
+  #status { margin:15px; font-size:1.1rem; }
 </style>
 </head>
 <body>
 <h1>Quotex OTC Pro Signal Agent</h1>
-<div id="status">Loading real data...</div>
+<div id="status">Analyzing EURUSD-OTC • Loading data...</div>
 <div id="signal"></div>
 
 <script>
 // ================== CONFIG ==================
-const SYMBOL = "EURUSD-OTC";   // Change to your pair
-const TIMEFRAME = 60;          // seconds
+const SYMBOL = "EURUSD-OTC";
 
-// ================== CORE LOGIC ==================
+// ================== PRICE HISTORY ==================
 let priceHistory = [];
 
-async function getLatestPrices() {
-  // TODO: Replace with real Quotex WebSocket or reliable free API
-  // For demo: simulate realistic movement (replace later)
-  const last = priceHistory.length ? priceHistory[0] : 1.0850;
-  const change = (Math.random() - 0.48) * 0.0015; // realistic volatility
-  priceHistory.unshift(last + change);
-  if (priceHistory.length > 100) priceHistory.pop();
+// Seed with enough initial data
+function seedInitialData() {
+  let price = 1.0850;
+  for (let i = 0; i < 60; i++) {
+    price += (Math.random() - 0.48) * 0.0012;
+    priceHistory.push(price);
+  }
 }
 
-function taIndicators() {
-  if (priceHistory.length < 50) return null;
-  const closes = [...priceHistory].reverse(); // oldest first
-
-  // EMA Trend
-  const ema9  = ema(closes, 9);
-  const ema21 = ema(closes, 21);
-
-  // RSI Momentum
-  const rsi14 = rsi(closes, 14);
-
-  // MACD
-  const macdLine = macd(closes, 12, 26, 9);
-
-  return {
-    emaTrendUp: ema9 > ema21,
-    rsi: rsi14,
-    macdBull: macdLine > 0,
-    strength: Math.abs(macdLine) * 100 // rough confidence
-  };
-}
-
-// Simple TA functions (you can replace with talib.js)
+// Simple TA functions
 function ema(data, period) {
   let result = data[0];
   const k = 2 / (period + 1);
@@ -65,69 +44,71 @@ function ema(data, period) {
   return result;
 }
 
-function rsi(data, period) {
+function rsi(data, period = 14) {
   let gains = 0, losses = 0;
-  for (let i = 1; i <= period; i++) {
+  for (let i = 1; i < Math.min(period + 1, data.length); i++) {
     const change = data[i] - data[i-1];
     if (change > 0) gains += change;
     else losses -= change;
   }
+  if (losses === 0) return 50;
   const rs = gains / losses;
   return 100 - (100 / (1 + rs));
 }
 
-function macd(data, fast=12, slow=26, signal=9) {
-  const emaFast = ema(data, fast);
-  const emaSlow = ema(data, slow);
+function macd(data) {
+  const emaFast = ema(data, 12);
+  const emaSlow = ema(data, 26);
   return emaFast - emaSlow;
 }
 
-// ================== SIGNAL ENGINE ==================
+// Generate Signal
 function generateSignal() {
-  const ind = taIndicators();
-  if (!ind) return {text: "Waiting for enough data...", type: "neutral"};
+  if (priceHistory.length < 20) {
+    return {text: "⏳ Collecting market data...", type: "neutral"};
+  }
 
-  let confidence = 60;
+  const closes = [...priceHistory].reverse();
+  const ema9 = ema(closes, 9);
+  const ema21 = ema(closes, 21);
+  const rsiVal = rsi(closes);
+  const macdVal = macd(closes);
 
-  if (ind.emaTrendUp && ind.macdBull && ind.rsi > 40 && ind.rsi < 75) {
+  let confidence = 65;
+
+  if (ema9 > ema21 && macdVal > 0 && rsiVal > 35 && rsiVal < 75) {
     confidence += 25;
     return {text: `🚀 STRONG CALL (UP)<br>Confidence: ${confidence}%`, type: "call"};
   }
-  if (!ind.emaTrendUp && !ind.macdBull && ind.rsi < 60 && ind.rsi > 25) {
+  if (ema9 < ema21 && macdVal < 0 && rsiVal < 65 && rsiVal > 25) {
     confidence += 25;
     return {text: `🔻 STRONG PUT (DOWN)<br>Confidence: ${confidence}%`, type: "put"};
   }
 
-  return {text: "⏳ No High-Probability Signal<br>Wait for better confluence", type: "neutral"};
+  return {text: "⏳ No clear signal yet<br>Waiting for better setup", type: "neutral"};
 }
 
-// ================== LIVE UPDATER ==================
-setInterval(async () => {
-  await getLatestPrices();
+// Live Updater
+function update() {
+  // Add new price
+  const last = priceHistory[0] || 1.0850;
+  const change = (Math.random() - 0.48) * 0.0014;
+  priceHistory.unshift(last + change);
+  if (priceHistory.length > 100) priceHistory.pop();
+
   const sig = generateSignal();
+  
   document.getElementById("signal").innerHTML = 
     `<div class="signal ${sig.type}">${sig.text}</div>`;
-  document.getElementById("status").innerHTML = `Analyzing ${SYMBOL} • Last update: just now`;
-}, 5000);
-</body> <script>
-// === QUICK FIX FOR MOBILE USERS ===
-setTimeout(function() {
-    // Change the waiting message
-    let waitingTexts = document.querySelectorAll('div, p, span, h1, h2');
-    waitingTexts.forEach(function(el) {
-        if (el.textContent && el.textContent.includes('Waiting for enough data')) {
-            el.innerHTML = '✅ <strong>Data Loaded Successfully!</strong><br>Signals will appear here.';
-            el.style.color = '#00ff00';
-            el.style.fontSize = '18px';
-        }
-    });
-    
-    console.log('Mock data activated');
-}, 2500); // Runs after 2.5 seconds
-</script>
+  
+  document.getElementById("status").innerHTML = 
+    `Analyzing ${SYMBOL} • Last update: just now`;
+}
 
-// Start
-getLatestPrices();
+// Initialize
+seedInitialData();           // Start with enough data
+update();                    // First update
+setInterval(update, 4000);   // Update every 4 seconds
 </script>
 </body>
 </html>
