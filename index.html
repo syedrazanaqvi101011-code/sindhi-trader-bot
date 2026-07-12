@@ -19,10 +19,8 @@
 <div id="signal"></div>
 
 <script>
-// ================== FAST START ==================
 let priceHistory = [];
 
-// Seed realistic data immediately
 function seedData() {
   let price = 1.0845;
   for (let i = 0; i < 60; i++) {
@@ -31,12 +29,10 @@ function seedData() {
   }
 }
 
-// Technical Analysis
 function getSignal() {
   if (priceHistory.length < 15) return {text: "⏳ Loading market data...", type: "neutral"};
 
   const closes = [...priceHistory].reverse();
-  const emaShort = closes[0] * 0.9 + closes[1] * 0.1; // simplified
   const trendUp = closes[0] > closes[5];
 
   if (trendUp) {
@@ -46,9 +42,7 @@ function getSignal() {
   }
 }
 
-// Update function
 function updateSignal() {
-  // Add new price
   const lastPrice = priceHistory[0] || 1.0850;
   priceHistory.unshift(lastPrice + (Math.random() - 0.5) * 0.0014);
   if (priceHistory.length > 80) priceHistory.pop();
@@ -58,10 +52,9 @@ function updateSignal() {
   document.getElementById("status").textContent = `Analyzing EURUSD-OTC • Live`;
 }
 
-// Initialize
 seedData();
 updateSignal();
-setInterval(updateSignal, 3500); // Update every 3.5 seconds
+setInterval(updateSignal, 3500);
 </script>
 </body>
 </html>
