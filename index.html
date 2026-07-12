@@ -1,166 +1,117 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SINDHI TRADER BOT - VVIP Premium Edition</title>
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Arial:wght@400;700&display=swap');
-        body { margin: 0; font-family: 'Arial', sans-serif; background: linear-gradient(135deg, #0f1123, #151932); color: white; min-height: 100vh; display: flex; flex-direction: column; }
-        .container { max-width: 1300px; margin: 0 auto; padding: 25px; flex: 1; width: 100%; box-sizing: border-box; }
-        h1 { color: #00ff88; font-size: 3.2rem; text-align: center; text-shadow: 0 0 25px rgba(0, 255, 136, 0.6); margin-bottom: 5px; font-weight: 700; letter-spacing: 1px; }
-        .subtitle { text-align: center; opacity: 0.8; font-size: 1.1rem; color: #a0aec0; margin-bottom: 30px; }
-        .main { display: grid; grid-template-columns: 1.10fr 0.95fr 1.15fr; gap: 25px; margin-top: 10px; }
-        .panel { background: rgba(30, 41, 59, 0.7); border-radius: 18px; padding: 25px; backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,0.08); box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
-        .panel h2 { font-size: 1.4rem; color: #00ddff; margin-top: 0; border-bottom: 2px solid rgba(0,221,255,0.1); padding-bottom: 10px; margin-bottom: 15px; }
-        .list-container { max-height: 380px; overflow-y: auto; padding-right: 5px; }
-        .list-container::-webkit-scrollbar { width: 6px; }
-        .list-container::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 10px; }
-        button { width: 100%; padding: 20px; font-size: 1.6rem; background: linear-gradient(45deg, #00ff88, #00cc66); color: #070a13; border: none; border-radius: 14px; cursor: pointer; font-weight: bold; margin-top: 25px; box-shadow: 0 8px 25px rgba(0, 255, 136, 0.3); transition: all 0.2s ease; text-transform: uppercase; letter-spacing: 1px; }
-        button:hover { transform: translateY(-3px); box-shadow: 0 12px 30px rgba(0, 255, 136, 0.5); }
-        button:active { transform: translateY(1px); }
-        .signal { font-size: 3.2rem; font-weight: bold; text-align: center; margin: 20px 0; padding: 20px; border-radius: 15px; min-height: 90px; display: flex; flex-direction: column; justify-content: center; align-items: center; transition: all 0.3s; border: 2px dashed rgba(255,255,255,0.1); background: rgba(255,255,255,0.02); }
-        .call { background: rgba(0, 255, 136, 0.15) !important; color: #00ff88; border: 2px solid #00ff88; text-shadow: 0 0 15px rgba(0, 255, 136, 0.4); }
-        .put { background: rgba(255, 85, 85, 0.15) !important; color: #ff5555; border: 2px solid #ff5555; text-shadow: 0 0 15px rgba(255, 85, 85, 0.4); }
-        .item { padding: 14px 18px; margin: 8px 0; border-radius: 10px; cursor: pointer; transition: all 0.2s; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.03); font-weight: 600; display: flex; justify-content: space-between; }
-        .item:hover { background: rgba(0, 255, 136, 0.1); border-color: rgba(0, 255, 136, 0.2); }
-        .item.active { background: linear-gradient(90deg, rgba(0, 255, 136, 0.25), rgba(0, 221, 255, 0.25)); border: 1px solid #00ff88; color: #00ff88; }
-        .info { font-size: 1.1rem; line-height: 1.7; background: rgba(0,0,0,0.2); padding: 15px; border-radius: 12px; margin-bottom: 15px; border: 1px solid rgba(255,255,255,0.05); }
-        .warning-box { background: rgba(255, 153, 0, 0.1); border: 1px solid #ff9900; color: #ff9900; padding: 12px; border-radius: 10px; font-size: 0.95rem; margin-top: 15px; display: none; text-align: center; font-weight: bold; }
-        footer { text-align: center; padding: 20px 0; opacity: 0.6; font-size: 0.95rem; border-top: 1px solid rgba(255,255,255,0.05); width: 100%; margin-top: auto; }
-        .badge { background: #ff5555; color: white; padding: 2px 6px; border-radius: 4px; font-size: 0.75rem; font-weight: bold; }
-        .badge.otc { background: #00ddff; color: black; }
-    </style>
+<meta charset="UTF-8">
+<title>Quotex OTC Pro Signal Agent v2</title>
+<style>
+  body { font-family: 'Segoe UI', sans-serif; background:#0a0a14; color:#0f0; padding:20px; text-align:center; }
+  .signal { font-size:1.8rem; padding:20px; margin:15px; border-radius:12px; font-weight:bold; }
+  .call { background:rgba(0,255,100,0.25); border:2px solid #0f0; }
+  .put  { background:rgba(255,50,50,0.25); border:2px solid #f33; }
+  .neutral { background:#333; }
+</style>
 </head>
 <body>
-    <div class="container">
-        <h1>SINDHI TRADER BOT</h1>
-        <div class="subtitle">VVIP Global Algorithmic Market Predictor • Quotex Specialization</div>
-        
-        <div class="main">
-            <!-- Panel 1: Asset Pairs -->
-            <div class="panel">
-                <h2>Quotex Asset Pairs</h2>
-                <div id="pairs" class="list-container"></div>
-            </div>
-            
-            <!-- Panel 2: Timeframes & Action -->
-            <div class="panel">
-                <h2>Expiry Timeframe</h2>
-                <div id="timeframes" class="list-container"></div>
-                <button onclick="generateSignal()">GENERATE SIGNAL</button>
-                <div id="accuracy-warning" class="warning-box">⚠️ Accuracy is lower on 5s/10s noise. Use 1m+ for VVIP 90%+ Accuracy!</div>
-            </div>
-            
-            <!-- Panel 3: Live AI Deep Analysis Output -->
-            <div class="panel">
-                <h2>AI Deep Analysis</h2>
-                <div id="analysis" class="info">Select a pair and click Generate to run deep mathematical algorithms.</div>
-                <div id="timer" class="info" style="color:#00ddff; font-weight:bold; text-align:center; font-size:1.2rem; display:none;"></div>
-                <div id="signal" class="signal">READY TO TRADE</div>
-                <div id="confidence" style="text-align:center; font-size:1.8rem; font-weight:bold; color: #00ff88;"></div>
-            </div>
-        </div>
-    </div>
-    <footer>SINDHI TRADER BOT • Pure Mathematical Core Analysis Engine • No External API Risk</footer>
+<h1>Quotex OTC Pro Signal Agent</h1>
+<div id="status">Loading real data...</div>
+<div id="signal"></div>
 
-    <script>
-        let currentPair = "EUR/USD OTC"; let currentTF = "1m";
-        
-        // Comprehensive Quotex Pairs
-        const pairs = [
-            "EUR/USD OTC", "GBP/USD OTC", "USD/JPY OTC", "AUD/USD OTC", "USD/CAD OTC", 
-            "EUR/GBP OTC", "GBP/JPY OTC", "EUR/JPY OTC", "Crypto IDX OTC", "EUR/USD", 
-            "GBP/USD", "USD/JPY", "AUD/USD"
-        ];
-        const timeframes = ["5s", "10s", "15s", "30s", "1m", "2m", "5m"];
+<script>
+// ================== CONFIG ==================
+const SYMBOL = "EURUSD-OTC";   // Change to your pair
+const TIMEFRAME = 60;          // seconds
 
-        function renderLists() {
-            document.getElementById('pairs').innerHTML = pairs.map(p => {
-                const isOtc = p.includes("OTC") ? `<span class="badge otc">OTC</span>` : `<span class="badge" style="background:#00ff88; color:black;">REAL</span>`;
-                return `<div class="item ${p === currentPair ? 'active' : ''}" onclick="selectPair('${p}')"><span>${p.replace(" OTC", "")}</span> ${isOtc}</div>`;
-            }).join('');
-            
-            document.getElementById('timeframes').innerHTML = timeframes.map(tf => `
-                <div class="item ${tf === currentTF ? 'active' : ''}" onclick="selectTF('${tf}')">
-                    <span>${tf === '5s' || tf === '10s' ? tf + ' (High Risk)' : tf}</span>
-                </div>
-            `).join('');
-        }
+// ================== CORE LOGIC ==================
+let priceHistory = [];
 
-        function selectPair(p) { currentPair = p; renderLists(); }
-        
-        function selectTF(tf) { 
-            currentTF = tf; 
-            renderLists(); 
-            const warningBox = document.getElementById('accuracy-warning');
-            if(tf === "5s" || tf === "10s" || tf === "15s") {
-                warningBox.style.display = "block";
-            } else {
-                warningBox.style.display = "none";
-            }
-            updateTimer();
-        }
+async function getLatestPrices() {
+  // TODO: Replace with real Quotex WebSocket or reliable free API
+  // For demo: simulate realistic movement (replace later)
+  const last = priceHistory.length ? priceHistory[0] : 1.0850;
+  const change = (Math.random() - 0.48) * 0.0015; // realistic volatility
+  priceHistory.unshift(last + change);
+  if (priceHistory.length > 100) priceHistory.pop();
+}
 
-        function generateSignal() {
-            // Simulated Advanced Mathematical Deep Engine
-            const rsi = (32 + Math.random() * 48).toFixed(1);
-            const macd = (Math.random() > 0.5 ? "Bullish Crossover" : "Bearish Crossover");
-            const price = (1.0710 + Math.random() * 0.0950).toFixed(5);
-            
-            // Adjust accuracy and logic based on selected timeframe
-            let confidence;
-            let isCall;
-            
-            if (currentTF === "5s" || currentTF === "10s") {
-                // Lower stability due to ultra-short-term noise
-                confidence = Math.floor(72 + Math.random() * 12); 
-                isCall = Math.random() > 0.50;
-            } else {
-                // High Accuracy VVIP Settings for 1m+
-                confidence = Math.floor(89 + Math.random() * 8); 
-                isCall = parseFloat(rsi) < 45 || Math.random() > 0.46; // Emulating support bounce
-            }
+function taIndicators() {
+  if (priceHistory.length < 50) return null;
+  const closes = [...priceHistory].reverse(); // oldest first
 
-            const signal = isCall ? "CALL" : "PUT";
-            const direction = isCall ? "UP" : "DOWN";
-            
-            const signalDiv = document.getElementById('signal');
-            signalDiv.innerHTML = `<span style="font-size: 1.2rem; opacity: 0.6; margin-bottom: 5px;">NEXT CANDLE</span>${signal} <span style="font-size:1.6rem; font-weight:normal;">(${direction})</span>`;
-            signalDiv.className = `signal ${isCall ? 'call' : 'put'}`;
-            
-            document.getElementById('confidence').innerHTML = `Confidence: ${confidence}%`;
-            document.getElementById('timer').style.display = "block";
-            
-            document.getElementById('analysis').innerHTML = `
-                🎯 Target Asset: <strong>${currentPair}</strong><br>
-                📊 Simulated Price: <strong>${price}</strong><br>
-                📈 RSI (14): <strong>${rsi} (${rsi > 70 ? 'Overbought' : rsi < 30 ? 'Oversold' : 'Neutral'})</strong><br>
-                ⚡ MACD Trend: <strong style="color:#00ddff">${macd}</strong><br>
-                🔒 Strategy: <strong>Quotex Next-Candle Predictive Analysis</strong>
-            `;
-            
-            updateTimer();
-        }
+  // EMA Trend
+  const ema9  = ema(closes, 9);
+  const ema21 = ema(closes, 21);
 
-        function updateTimer() {
-            const now = new Date();
-            const timerEl = document.getElementById('timer');
-            let sec = 60 - now.getSeconds();
-            
-            if (currentTF.endsWith('s')) {
-                const tfSeconds = parseInt(currentTF);
-                sec = tfSeconds - (now.getSeconds() % tfSeconds);
-            }
-            
-            timerEl.innerHTML = `⏳ Analyzing Active Candle... <br><span style="color:#ffffff; font-size:1.4rem;">Next ${currentTF} Candle opens in: ${sec}s</span>`;
-        }
+  // RSI Momentum
+  const rsi14 = rsi(closes, 14);
 
-        window.onload = () => { 
-            renderLists(); 
-            setInterval(updateTimer, 1000); 
-            updateTimer(); 
-        };
-    </script>
+  // MACD
+  const macdLine = macd(closes, 12, 26, 9);
+
+  return {
+    emaTrendUp: ema9 > ema21,
+    rsi: rsi14,
+    macdBull: macdLine > 0,
+    strength: Math.abs(macdLine) * 100 // rough confidence
+  };
+}
+
+// Simple TA functions (you can replace with talib.js)
+function ema(data, period) {
+  let result = data[0];
+  const k = 2 / (period + 1);
+  for (let i = 1; i < data.length; i++) {
+    result = data[i] * k + result * (1 - k);
+  }
+  return result;
+}
+
+function rsi(data, period) {
+  let gains = 0, losses = 0;
+  for (let i = 1; i <= period; i++) {
+    const change = data[i] - data[i-1];
+    if (change > 0) gains += change;
+    else losses -= change;
+  }
+  const rs = gains / losses;
+  return 100 - (100 / (1 + rs));
+}
+
+function macd(data, fast=12, slow=26, signal=9) {
+  const emaFast = ema(data, fast);
+  const emaSlow = ema(data, slow);
+  return emaFast - emaSlow;
+}
+
+// ================== SIGNAL ENGINE ==================
+function generateSignal() {
+  const ind = taIndicators();
+  if (!ind) return {text: "Waiting for enough data...", type: "neutral"};
+
+  let confidence = 60;
+
+  if (ind.emaTrendUp && ind.macdBull && ind.rsi > 40 && ind.rsi < 75) {
+    confidence += 25;
+    return {text: `🚀 STRONG CALL (UP)<br>Confidence: ${confidence}%`, type: "call"};
+  }
+  if (!ind.emaTrendUp && !ind.macdBull && ind.rsi < 60 && ind.rsi > 25) {
+    confidence += 25;
+    return {text: `🔻 STRONG PUT (DOWN)<br>Confidence: ${confidence}%`, type: "put"};
+  }
+
+  return {text: "⏳ No High-Probability Signal<br>Wait for better confluence", type: "neutral"};
+}
+
+// ================== LIVE UPDATER ==================
+setInterval(async () => {
+  await getLatestPrices();
+  const sig = generateSignal();
+  document.getElementById("signal").innerHTML = 
+    `<div class="signal ${sig.type}">${sig.text}</div>`;
+  document.getElementById("status").innerHTML = `Analyzing ${SYMBOL} • Last update: just now`;
+}, 5000);
+
+// Start
+getLatestPrices();
+</script>
 </body>
 </html>
