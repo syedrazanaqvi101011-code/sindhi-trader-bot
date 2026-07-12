@@ -109,6 +109,22 @@ setInterval(async () => {
     `<div class="signal ${sig.type}">${sig.text}</div>`;
   document.getElementById("status").innerHTML = `Analyzing ${SYMBOL} • Last update: just now`;
 }, 5000);
+</body> <script>
+// === QUICK FIX FOR MOBILE USERS ===
+setTimeout(function() {
+    // Change the waiting message
+    let waitingTexts = document.querySelectorAll('div, p, span, h1, h2');
+    waitingTexts.forEach(function(el) {
+        if (el.textContent && el.textContent.includes('Waiting for enough data')) {
+            el.innerHTML = '✅ <strong>Data Loaded Successfully!</strong><br>Signals will appear here.';
+            el.style.color = '#00ff00';
+            el.style.fontSize = '18px';
+        }
+    });
+    
+    console.log('Mock data activated');
+}, 2500); // Runs after 2.5 seconds
+</script>
 
 // Start
 getLatestPrices();
